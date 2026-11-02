@@ -1,0 +1,119 @@
+# Deploys one release (a vX.Y.Z tag whose images are on GHCR) to the VPS.
+#
+#   - Release workflow: called right after the images of a new tag are published.
+#   - By hand (Actions > Deploy > Run workflow): redeploy a version, or roll back by giving an
+#     earlier one.
+#
+# Secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY, DEPLOY_PATH (shared with the other projects on the
+# VPS). The application secrets live in DEPLOY_PATH/.env on the server, never in GitHub.
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release tag to deploy, e.g. v0.2.0 (an earlier one rolls back)"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  packages: read
+
+# One deployment at a time, and never cancel one halfway through.
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+env:
+  # A secret rather than a value in this public file: GitHub masks it in the run logs.
+  DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+  VERSION: ${{ inputs.version }}
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://brandonkamga.com
+    steps:
+      - name: Version is a release tag
+        run: |
+          [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "::error::'$VERSION' is not a release tag (vX.Y.Z)."
+            exit 1
+          }
+          [[ "$DEPLOY_PATH" == /* ]] || {
+            echo "::error::Secret DEPLOY_PATH is missing or not an absolute path."
+            exit 1
+          }
+
+      # The stack definition of the deployed version travels with it, so a rollback also rolls
+      # back the compose file.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Upload the stack definition
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "infra/docker-compose.prod.yml,infra/mongo-init,infra/scripts"
+          target: ${{ env.DEPLOY_PATH }}
+          strip_components: 1
+          overwrite: true
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_USER,GHCR_TOKEN,VERSION,DEPLOY_PATH
+          timeout: 60s
+          command_timeout: 15m
+          script: |
+            set -euo pipefail
+            cd "$DEPLOY_PATH"
+            [ -f .env ] || { echo "Missing $DEPLOY_PATH/.env: fill it from infra/.env.example."; exit 1; }
+            compose="docker compose -f docker-compose.prod.yml"
+
+            # Compose reads the tag from here during this run; it is written to .env only once
+            # the new version is up, so a failed deploy leaves .env naming the last good one.
+            export IMAGE_TAG="$VERSION"
+            echo "-> Deploying me $VERSION"
+
+            docker network inspect traefik-public >/dev/null 2>&1 || docker network create traefik-public
+
+            # The job token can pull this repository's packages for as long as the job runs.
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            $compose pull web api
+            docker logout ghcr.io
+
+            # Compose waits for MongoDB, then the API, to be healthy before starting the next one.
+            $compose up -d --remove-orphans --wait --wait-timeout 300 || {
+              $compose ps
+              $compose logs --tail=80 api web
+              exit 1
+            }
+
+            if grep -q '^IMAGE_TAG=' .env; then
+              sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$VERSION/" .env
+            else
+              printf '\nIMAGE_TAG=%s\n' "$VERSION" >> .env
+            fi
+
+            docker image prune -f --filter "until=24h" >/dev/null 2>&1 || true
+            $compose ps
+            echo "-> me $VERSION is live"
