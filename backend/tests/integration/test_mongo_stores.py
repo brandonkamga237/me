@@ -1,3 +1,4 @@
+import os
 from collections.abc import AsyncIterator, Iterator
 from datetime import UTC, datetime
 
@@ -25,6 +26,10 @@ def fields(slug: str, position: int = 0, published: bool = True) -> ProjectField
 
 @pytest.fixture(scope="module")
 def mongo_uri() -> Iterator[str]:
+    """MONGO_URI when a server is already running (CI service), otherwise a throwaway container."""
+    if uri := os.environ.get("MONGO_URI"):
+        yield uri
+        return
     with MongoDbContainer("mongo:8.0") as mongo:
         yield mongo.get_connection_url()
 
