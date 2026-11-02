@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Brandon Kamga · Software engineer",
+    "description": "Software engineer in Yaoundé, Cameroon: backend systems, platforms and DevOps. Founder of LesCracks."
+  },
+  "nav": {
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "writing": "Writing",
+    "contact": "Contact",
+    "language": "Français",
+    "skip": "Skip to content"
+  },
+  "hero": {
+    "available": "Open to opportunities",
+    "unavailable": "Not looking right now",
+    "contact": "Get in touch",
+    "projects": "See my work"
+  },
+  "about": { "title": "About" },
+  "experience": { "title": "Experience", "present": "Present", "empty": "Experience coming soon." },
+  "projects": {
+    "title": "Selected work",
+    "intro": "Products I designed and built end to end, most of them in production.",
+    "featured": "Featured",
+    "code": "Code",
+    "live": "Live site",
+    "back": "All projects",
+    "stack": "Stack",
+    "empty": "Projects coming soon."
+  },
+  "skills": {
+    "title": "Toolbox",
+    "categories": {
+      "language": "Languages",
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "data": "Data",
+      "platform": "Platform",
+      "practice": "Practices"
+    }
+  },
+  "writing": {
+    "title": "Writing",
+    "intro": "I write in French on LesCracks, the platform I founded to share what I know and push young people to innovate.",
+    "all": "All articles",
+    "minutes": "min read"
+  },
+  "contact": {
+    "title": "Let's talk",
+    "intro": "A role, a project or an idea? Write to me and I'll get back to you.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending…",
+    "success": "Thanks! Your message is on its way, I'll answer soon.",
+    "errors": {
+      "name": "Tell me your name.",
+      "email": "This email address doesn't look right.",
+      "message": "Write at least 10 characters.",
+      "throttled": "Too many messages in a short time, try again later.",
+      "unexpected": "The message couldn't be sent. Try again in a moment."
+    }
+  },
+  "footer": { "built": "Built with Next.js and FastAPI.", "source": "Source" },
+  "notFound": { "title": "Page not found", "back": "Back home" },
+  "loading": "Loading…"
+}

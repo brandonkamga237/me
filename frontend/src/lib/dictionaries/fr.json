@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Brandon Kamga · Ingénieur logiciel",
+    "description": "Ingénieur logiciel à Yaoundé, au Cameroun : systèmes backend, plateformes et DevOps. Fondateur de LesCracks."
+  },
+  "nav": {
+    "about": "À propos",
+    "experience": "Parcours",
+    "projects": "Projets",
+    "skills": "Compétences",
+    "writing": "Articles",
+    "contact": "Contact",
+    "language": "English",
+    "skip": "Aller au contenu"
+  },
+  "hero": {
+    "available": "Ouvert aux opportunités",
+    "unavailable": "Pas disponible pour le moment",
+    "contact": "Me contacter",
+    "projects": "Voir mes projets"
+  },
+  "about": { "title": "À propos" },
+  "experience": { "title": "Parcours", "present": "Aujourd'hui", "empty": "Parcours bientôt disponible." },
+  "projects": {
+    "title": "Projets choisis",
+    "intro": "Des produits que j'ai conçus et construits de bout en bout, la plupart en production.",
+    "featured": "À la une",
+    "code": "Code",
+    "live": "Site en ligne",
+    "back": "Tous les projets",
+    "stack": "Technologies",
+    "empty": "Projets bientôt disponibles."
+  },
+  "skills": {
+    "title": "Boîte à outils",
+    "categories": {
+      "language": "Langages",
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "data": "Données",
+      "platform": "Plateforme",
+      "practice": "Pratiques"
+    }
+  },
+  "writing": {
+    "title": "Articles",
+    "intro": "J'écris sur LesCracks, la plateforme que j'ai fondée pour partager ce que je sais et pousser les jeunes à innover.",
+    "all": "Tous les articles",
+    "minutes": "min de lecture"
+  },
+  "contact": {
+    "title": "Parlons-en",
+    "intro": "Un poste, un projet ou une idée ? Écris-moi, je te réponds rapidement.",
+    "name": "Nom",
+    "email": "E-mail",
+    "message": "Message",
+    "send": "Envoyer",
+    "sending": "Envoi…",
+    "success": "Merci ! Ton message est bien parti, je te réponds bientôt.",
+    "errors": {
+      "name": "Indique ton nom.",
+      "email": "Cette adresse e-mail ne semble pas valide.",
+      "message": "Écris au moins 10 caractères.",
+      "throttled": "Trop de messages en peu de temps, réessaie plus tard.",
+      "unexpected": "Le message n'a pas pu partir. Réessaie dans un instant."
+    }
+  },
+  "footer": { "built": "Construit avec Next.js et FastAPI.", "source": "Code source" },
+  "notFound": { "title": "Page introuvable", "back": "Retour à l'accueil" },
+  "loading": "Chargement…"
+}
