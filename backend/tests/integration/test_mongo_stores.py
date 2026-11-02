@@ -30,7 +30,7 @@ def mongo_uri() -> Iterator[str]:
     if uri := os.environ.get("MONGO_URI"):
         yield uri
         return
-    with MongoDbContainer("mongo:8.0") as mongo:
+    with MongoDbContainer("mongo:7.0") as mongo:
         yield mongo.get_connection_url()
 
 
