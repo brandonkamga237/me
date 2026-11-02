@@ -14,7 +14,9 @@ concurrency:
 
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    # MongoDB 8.0 refuses to start on Linux 6.19+ (SERVER-121912), the kernel of the Ubuntu 26
+    # runners. 24.04 matches the VPS until a fixed MongoDB release ships.
+    runs-on: ubuntu-24.04
     # The MongoDB adapters are tested against a real server too.
     services:
       mongo:
