@@ -59,7 +59,9 @@ services:
         condition: service_healthy
 
   mongo:
-    image: mongo:8.0
+    # MongoDB 7.0, not 8.x: 8.x refuses to start on Linux 6.19 and newer (SERVER-121912), the kernel
+    # of current laptops and CI runners. Every environment runs the same version.
+    image: mongo:7.0
     container_name: me-mongo
     restart: unless-stopped
     environment:
