@@ -1,0 +1,57 @@
+[project]
+name = "me-api"
+version = "0.1.0"
+description = "API behind the portfolio: public content, contact messages and the admin back office."
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.162,<1",
+    "uvicorn[standard]>=0.54",
+    "pymongo>=4.19,<5",
+    "pydantic[email]>=2.14,<3",
+    "pydantic-settings>=2.16,<3",
+    "pyjwt>=2.15,<3",
+    "pwdlib[argon2]>=0.3,<1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2",
+    "pytest-asyncio>=1.2",
+    "httpx2>=2.16",
+    "ruff>=0.17",
+    "mypy>=2.4",
+    "testcontainers[mongodb]>=4.15",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "ASYNC", "S", "RUF", "PT", "PL"]
+ignore = ["PLR0913", "PLR2004"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "PLR2004"]
+# Starting content: long bilingual sentences read better unwrapped.
+"app/seed.py" = ["E501", "PLR0917"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["testcontainers.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
+markers = ["integration: needs Docker (MongoDB through Testcontainers)"]
+addopts = "-m 'not integration'"
