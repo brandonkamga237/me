@@ -1,19 +1,23 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { Cursor } from "@/components/motion/Cursor";
+import { ScrollHud } from "@/components/motion/ScrollHud";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { Footer } from "@/components/site/Footer";
-import { Header } from "@/components/site/Header";
+import { type NavLabels, SiteNav } from "@/components/site/SiteNav";
 import { getDictionary } from "@/lib/dictionaries";
 import { env } from "@/lib/env";
-import { hasLocale, locales } from "@/lib/i18n";
+import { dmSans, jetbrainsMono } from "@/lib/fonts";
+import { hasLocale, type Locale, locales } from "@/lib/i18n";
+import { getProfile } from "@/services/api";
 import "../../globals.css";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ lang: locale }));
 }
+
+export const viewport: Viewport = { themeColor: "#000000" };
 
 export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Promise<Metadata> {
   const { lang: locale } = await params;
@@ -31,19 +35,34 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
   };
 }
 
+// Marks that scripts run, before the first paint, so the hero can wait for its intro.
+const MOTION_FLAG = "document.documentElement.classList.add('motion')";
+
 export default async function SiteLayout({ children, params }: LayoutProps<"/[lang]">) {
   const { lang: locale } = await params;
   if (!hasLocale(locale)) notFound();
   const dict = await getDictionary(locale);
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <body className="flex min-h-dvh flex-col font-sans">
-        <Header locale={locale} dict={dict} />
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6">
-          {children}
-        </main>
-        <Footer dict={dict} />
+    <html lang={locale} className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: MOTION_FLAG }} />
+      </head>
+      <body className="min-h-dvh font-sans">
+        <SmoothScroll>
+          <Suspense fallback={<SiteNav locale={locale} labels={dict.nav} socials={[]} />}>
+            <Nav locale={locale} labels={dict.nav} />
+          </Suspense>
+          <main id="main">{children}</main>
+          <Footer dict={dict} />
+          <ScrollHud />
+          <Cursor />
+        </SmoothScroll>
       </body>
     </html>
   );
+}
+
+async function Nav({ locale, labels }: { locale: Locale; labels: NavLabels }) {
+  const profile = await getProfile();
+  return <SiteNav locale={locale} labels={labels} socials={profile?.socials ?? []} />;
 }

@@ -1,27 +1,41 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
+/* The LesCracks palette: pure black, gold accent. Sections marked .mode-light flip to paper. */
 :root {
-  --bg: #ffffff;
-  --fg: #1f2328;
-  --muted: #59636e;
-  --border: #d0d7de;
-  --panel: #f6f8fa;
-  --grid: #f0f2f4;
-  --success: #1a7f37;
-  --danger: #cf222e;
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: rgba(255, 255, 255, 0.6);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --panel: #0d0d0d;
+  --card: #232424;
+  --grid: rgba(255, 255, 255, 0.04);
+  --accent: #d4af37;
+  /* Gold that stays AA as text on the current background. */
+  --accent-ink: #d4af37;
+  --success: #4ade80;
+  --danger: #f87171;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0d1117;
-    --fg: #e6edf3;
-    --muted: #8b949e;
-    --border: #30363d;
-    --panel: #161b22;
-    --grid: #141a21;
-    --success: #3fb950;
-    --danger: #f85149;
-  }
+.mode-light {
+  --bg: #f5f5f2;
+  --fg: #0b1215;
+  --muted: rgba(11, 18, 21, 0.66);
+  --border: rgba(11, 18, 21, 0.12);
+  --border-strong: rgba(11, 18, 21, 0.24);
+  --panel: #ebebe6;
+  --card: #ffffff;
+  --grid: rgba(11, 18, 21, 0.05);
+  --accent-ink: #80631d;
+  --success: #15803d;
+  --danger: #b91c1c;
+  color-scheme: light;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 @theme inline {
@@ -29,65 +43,176 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
   --color-success: var(--success);
   --color-danger: var(--danger);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-jetbrains-mono);
+  --ease-out-expo: var(--ease-out);
+  --ease-in-out-expo: var(--ease-in-out);
 }
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 5rem;
 }
 
 body {
   background: var(--bg);
   color: var(--fg);
+  font-optical-sizing: auto;
 }
 
 ::selection {
-  background: var(--fg);
-  color: var(--bg);
+  background: var(--accent);
+  color: #000;
 }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────────── */
+
+/* Display type sized to the viewport, the way the reference sites set their names. */
+.display {
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: max(1px, 0.012em) var(--fg);
+}
+
+.text-outline-accent {
+  color: transparent;
+  -webkit-text-stroke: max(1px, 0.012em) var(--accent);
+}
+
+/* SplitText masks clip at the line box; tight display lines would lose their accents (É, Î). */
+[data-split] > div,
+[data-hero-line] > div {
+  padding-top: 0.14em;
+  margin-top: -0.14em;
+}
+
+/* Mono micro-labels: (01) — ABOUT */
+.eyebrow {
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Side padding shared by every full-bleed section. */
+@utility gutter {
+  padding-inline: clamp(1.25rem, 3.6vw, 3.5rem);
+}
+
+/* Horizontal scrollers that swipe without showing a bar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Technical details ──────────────────────────────────────────────────── */
 
 .bg-grid {
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-size: 48px 48px;
 }
 
-/* The hero terminal types its lines in, one after the other. */
-@keyframes reveal {
-  from {
-    clip-path: inset(0 100% 0 0);
+/* Four corner brackets around a frame. */
+@utility corners {
+  --c: 14px;
+  background:
+    linear-gradient(var(--border-strong), var(--border-strong)) top left / var(--c) 1px,
+    linear-gradient(var(--border-strong), var(--border-strong)) top left / 1px var(--c),
+    linear-gradient(var(--border-strong), var(--border-strong)) top right / var(--c) 1px,
+    linear-gradient(var(--border-strong), var(--border-strong)) top right / 1px var(--c),
+    linear-gradient(var(--border-strong), var(--border-strong)) bottom left / var(--c) 1px,
+    linear-gradient(var(--border-strong), var(--border-strong)) bottom left / 1px var(--c),
+    linear-gradient(var(--border-strong), var(--border-strong)) bottom right / var(--c) 1px,
+    linear-gradient(var(--border-strong), var(--border-strong)) bottom right / 1px var(--c);
+  background-repeat: no-repeat;
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+
+/*
+ * The hero title is hidden until its intro plays, only when motion is allowed and scripts run
+ * (the .motion class is set by an inline script). If the intro has not started after 1.2s, it shows anyway.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .motion [data-intro] {
+    visibility: hidden;
+    animation: intro-fallback 0s 1.2s forwards;
   }
+}
+
+@keyframes intro-fallback {
   to {
-    clip-path: inset(0 0 0 0);
+    visibility: visible;
   }
 }
 
-@keyframes blink {
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+.scroll-cue {
+  animation: scroll-cue 2.2s var(--ease-in-out) infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 60%, transparent);
+  }
   50% {
-    opacity: 0;
+    box-shadow: 0 0 0 6px transparent;
   }
 }
 
-.type-line {
-  animation: reveal 0.6s steps(24, end) both;
-}
-
-.cursor {
-  animation: blink 1.1s steps(1) infinite;
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .type-line,
-  .cursor {
+  .scroll-cue,
+  .pulse-dot {
     animation: none;
   }
 }

@@ -5,34 +5,103 @@
   },
   "nav": {
     "about": "À propos",
-    "experience": "Parcours",
+    "method": "Méthode",
     "projects": "Projets",
-    "skills": "Compétences",
+    "skills": "Boîte à outils",
     "writing": "Articles",
     "contact": "Contact",
-    "language": "English",
-    "skip": "Aller au contenu"
+    "language": "EN",
+    "languageLabel": "Read in English",
+    "skip": "Aller au contenu",
+    "menu": "Menu",
+    "close": "Fermer",
+    "local": "Yaoundé",
+    "elsewhere": "Ailleurs",
+    "home": "Brandon Kamga, accueil"
   },
   "hero": {
+    "eyebrow": "Portfolio",
     "available": "Ouvert aux opportunités",
     "unavailable": "Pas disponible pour le moment",
+    "roles": [
+      "Backend",
+      "Plateforme",
+      "DevOps"
+    ],
+    "founder": "Fondateur de",
+    "scroll": "Défiler pour explorer",
     "contact": "Me contacter",
-    "projects": "Voir mes projets"
+    "title": "Ingénieur logiciel",
+    "specialties": "Backend · Plateforme · DevOps",
+    "stickers": {
+      "engineer": "Ingénieur logiciel",
+      "founder": "Fondateur · LesCracks",
+      "city": "Yaoundé",
+      "open": "Ouvert aux opportunités",
+      "stack": "Java · Go · TS · Python"
+    },
+    "drag": "Déplace les stickers"
   },
-  "about": { "title": "À propos" },
-  "experience": { "title": "Parcours", "present": "Aujourd'hui", "empty": "Parcours bientôt disponible." },
+  "about": {
+    "title": "À propos",
+    "experience": "Parcours",
+    "founder": "J'ai aussi fondé",
+    "statement": "Je construis des systèmes backend qui tiennent en production, et une communauté qui pousse les jeunes à innover.",
+    "readMore": "Lire mon histoire",
+    "basedIn": "Basé à",
+    "stack": "stack --core",
+    "photo": "Yaoundé, à un événement tech",
+    "founderText": "Articles, ateliers, événements et le LesCracks Talk."
+  },
+  "experience": {
+    "title": "Parcours",
+    "present": "Aujourd'hui",
+    "empty": "Parcours bientôt disponible."
+  },
+  "method": {
+    "title": "Ma façon de construire",
+    "solid": "MÉTH",
+    "outline": "ODE",
+    "steps": [
+      {
+        "label": "Le métier d'abord",
+        "title": "Des règles métier qui ne dépendent d'aucun framework.",
+        "text": "Architecture hexagonale et DDD côté backend : le domaine est du code simple, les adaptateurs se branchent autour, et un test garde les frameworks dehors."
+      },
+      {
+        "label": "Une seule commande",
+        "title": "Chaque projet démarre avec une seule commande.",
+        "text": "docker compose up, sans fichier de configuration à écrire. Un nouveau collègue lance toute la stack dès le premier jour."
+      },
+      {
+        "label": "Livré, pas seulement codé",
+        "title": "Versions, migrations et contrôles de santé font partie du travail.",
+        "text": "Images versionnées, CI à chaque changement, déploiements qu'on annule en un clic. C'est en production que le travail compte."
+      },
+      {
+        "label": "Bilingue par défaut",
+        "title": "Pensé pour ma région, en français et en anglais.",
+        "text": "Les produits que je construis sortent dans les deux langues dès le premier commit, de l'interface aux messages d'erreur."
+      }
+    ]
+  },
   "projects": {
     "title": "Projets choisis",
     "intro": "Des produits que j'ai conçus et construits de bout en bout, la plupart en production.",
+    "hint": "Continue de défiler",
     "featured": "À la une",
+    "open": "Voir le projet",
     "code": "Code",
     "live": "Site en ligne",
     "back": "Tous les projets",
     "stack": "Technologies",
+    "all": "Tous les dépôts",
+    "allText": "D'autres expériences, outils et projets open source sur GitHub.",
     "empty": "Projets bientôt disponibles."
   },
   "skills": {
     "title": "Boîte à outils",
+    "intro": "Les outils que j'utilise, de la base de données au pipeline.",
     "categories": {
       "language": "Langages",
       "backend": "Backend",
@@ -40,7 +109,8 @@
       "data": "Données",
       "platform": "Plateforme",
       "practice": "Pratiques"
-    }
+    },
+    "drag": "Attrape un sticker et lance-le"
   },
   "writing": {
     "title": "Articles",
@@ -50,7 +120,13 @@
   },
   "contact": {
     "title": "Parlons-en",
+    "big": [
+      "PARLONS",
+      "-EN"
+    ],
     "intro": "Un poste, un projet ou une idée ? Écris-moi, je te réponds rapidement.",
+    "elsewhere": "Ailleurs",
+    "direct": "En direct",
     "name": "Nom",
     "email": "E-mail",
     "message": "Message",
@@ -65,7 +141,14 @@
       "unexpected": "Le message n'a pas pu partir. Réessaie dans un instant."
     }
   },
-  "footer": { "built": "Construit avec Next.js et FastAPI.", "source": "Code source" },
-  "notFound": { "title": "Page introuvable", "back": "Retour à l'accueil" },
+  "footer": {
+    "built": "Construit avec Next.js et FastAPI.",
+    "source": "Code source",
+    "top": "Haut de page"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "back": "Retour à l'accueil"
+  },
   "loading": "Chargement…"
 }

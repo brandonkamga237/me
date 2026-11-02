@@ -1,16 +1,16 @@
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { About } from "@/components/site/About";
-import { ContactForm } from "@/components/site/ContactForm";
-import { ExperienceList } from "@/components/site/ExperienceList";
+import { Contact } from "@/components/site/Contact";
 import { Hero } from "@/components/site/Hero";
-import { ProjectGrid } from "@/components/site/ProjectGrid";
-import { Section } from "@/components/site/Section";
-import { SkillGroups } from "@/components/site/SkillGroups";
+import { Method } from "@/components/site/Method";
+import { Projects } from "@/components/site/Projects";
+import { Toolbox } from "@/components/site/Toolbox";
 import { Writing } from "@/components/site/Writing";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { getDictionary } from "@/lib/dictionaries";
-import { hasLocale } from "@/lib/i18n";
-import { notFound } from "next/navigation";
+import { type Dictionary, getDictionary } from "@/lib/dictionaries";
+import { hasLocale, type Locale } from "@/lib/i18n";
+import { getProfile } from "@/services/api";
 
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -19,37 +19,47 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      <Suspense fallback={<Skeleton className="my-20 h-96" />}>
-        <Hero locale={lang} dict={dict} />
+      {/* The fallback is the hero itself, without profile details: the name paints at once. */}
+      <Suspense fallback={<Hero dict={dict} profile={null} />}>
+        <HeroWithProfile dict={dict} />
       </Suspense>
-      <Section id="about" index="01" title={dict.about.title}>
-        <Suspense fallback={<Skeleton className="h-40" />}>
-          <About locale={lang} />
-        </Suspense>
-      </Section>
-      <Section id="experience" index="02" title={dict.experience.title}>
-        <Suspense fallback={<Skeleton className="h-64" />}>
-          <ExperienceList locale={lang} dict={dict} />
-        </Suspense>
-      </Section>
-      <Section id="projects" index="03" title={dict.projects.title} intro={dict.projects.intro}>
-        <Suspense fallback={<Skeleton className="h-96" />}>
-          <ProjectGrid locale={lang} dict={dict} />
-        </Suspense>
-      </Section>
-      <Section id="skills" index="04" title={dict.skills.title}>
-        <Suspense fallback={<Skeleton className="h-64" />}>
-          <SkillGroups dict={dict} />
-        </Suspense>
-      </Section>
-      <Section id="writing" index="05" title={dict.writing.title} intro={dict.writing.intro}>
-        <Suspense fallback={<Skeleton className="h-72" />}>
-          <Writing locale={lang} dict={dict} />
-        </Suspense>
-      </Section>
-      <Section id="contact" index="06" title={dict.contact.title} intro={dict.contact.intro}>
-        <ContactForm locale={lang} labels={dict.contact} />
-      </Section>
+      <Suspense fallback={<Placeholder light />}>
+        <About locale={lang} dict={dict} />
+      </Suspense>
+      <Method dict={dict} />
+      <Suspense fallback={<Placeholder />}>
+        <Projects locale={lang} dict={dict} />
+      </Suspense>
+      <Suspense fallback={<Placeholder light />}>
+        <Toolbox dict={dict} />
+      </Suspense>
+      <Suspense fallback={<Placeholder light />}>
+        <Writing locale={lang} dict={dict} />
+      </Suspense>
+      <Suspense fallback={<ContactSection locale={lang} dict={dict} withProfile={false} />}>
+        <ContactSection locale={lang} dict={dict} withProfile />
+      </Suspense>
     </>
+  );
+}
+
+interface SectionProps {
+  locale: Locale;
+  dict: Dictionary;
+}
+
+async function HeroWithProfile({ dict }: { dict: Dictionary }) {
+  return <Hero dict={dict} profile={await getProfile()} />;
+}
+
+async function ContactSection({ locale, dict, withProfile }: SectionProps & { withProfile: boolean }) {
+  return <Contact locale={locale} dict={dict} profile={withProfile ? await getProfile() : null} />;
+}
+
+function Placeholder({ light = false }: { light?: boolean }) {
+  return (
+    <div className={`gutter py-24 ${light ? "mode-light" : ""}`}>
+      <Skeleton className="h-[60vh]" />
+    </div>
   );
 }

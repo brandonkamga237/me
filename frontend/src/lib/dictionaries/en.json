@@ -5,34 +5,103 @@
   },
   "nav": {
     "about": "About",
-    "experience": "Experience",
+    "method": "Method",
     "projects": "Projects",
-    "skills": "Skills",
+    "skills": "Toolbox",
     "writing": "Writing",
     "contact": "Contact",
-    "language": "Français",
-    "skip": "Skip to content"
+    "language": "FR",
+    "languageLabel": "Lire en français",
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "local": "Yaoundé",
+    "elsewhere": "Elsewhere",
+    "home": "Brandon Kamga, home"
   },
   "hero": {
+    "eyebrow": "Portfolio",
     "available": "Open to opportunities",
     "unavailable": "Not looking right now",
+    "roles": [
+      "Backend",
+      "Platform",
+      "DevOps"
+    ],
+    "founder": "Founder of",
+    "scroll": "Scroll to explore",
     "contact": "Get in touch",
-    "projects": "See my work"
+    "title": "Software engineer",
+    "specialties": "Backend · Platform · DevOps",
+    "stickers": {
+      "engineer": "Software engineer",
+      "founder": "Founder · LesCracks",
+      "city": "Yaoundé",
+      "open": "Open to work",
+      "stack": "Java · Go · TS · Python"
+    },
+    "drag": "Drag the stickers"
   },
-  "about": { "title": "About" },
-  "experience": { "title": "Experience", "present": "Present", "empty": "Experience coming soon." },
+  "about": {
+    "title": "About",
+    "experience": "Experience",
+    "founder": "I also founded",
+    "statement": "I build backend systems that hold up in production, and a community that pushes young people to innovate.",
+    "readMore": "Read my full story",
+    "basedIn": "Based in",
+    "stack": "stack --core",
+    "photo": "Yaoundé, at a tech event",
+    "founderText": "Articles, workshops, events and the LesCracks Talk."
+  },
+  "experience": {
+    "title": "Experience",
+    "present": "Present",
+    "empty": "Experience coming soon."
+  },
+  "method": {
+    "title": "How I build",
+    "solid": "MET",
+    "outline": "HOD",
+    "steps": [
+      {
+        "label": "Domain first",
+        "title": "Business rules that depend on no framework.",
+        "text": "Hexagonal architecture and DDD on the backend: the domain is plain code, adapters plug in around it, and a test keeps the frameworks out."
+      },
+      {
+        "label": "One command",
+        "title": "Every project starts with a single command.",
+        "text": "docker compose up, no configuration file to write. A new teammate runs the whole stack on day one."
+      },
+      {
+        "label": "Shipped, not just coded",
+        "title": "Releases, migrations and health checks are part of the job.",
+        "text": "Versioned images, CI on every change, deploys that roll back with one click. Production is where the work counts."
+      },
+      {
+        "label": "Bilingual by default",
+        "title": "Built for my region, in French and English.",
+        "text": "The products I build ship in both languages from the first commit, from the interface to the error messages."
+      }
+    ]
+  },
   "projects": {
     "title": "Selected work",
     "intro": "Products I designed and built end to end, most of them in production.",
+    "hint": "Keep scrolling",
     "featured": "Featured",
+    "open": "Open case",
     "code": "Code",
     "live": "Live site",
     "back": "All projects",
     "stack": "Stack",
+    "all": "All repositories",
+    "allText": "More experiments, tools and open source on GitHub.",
     "empty": "Projects coming soon."
   },
   "skills": {
     "title": "Toolbox",
+    "intro": "The tools I reach for, from the database to the pipeline.",
     "categories": {
       "language": "Languages",
       "backend": "Backend",
@@ -40,7 +109,8 @@
       "data": "Data",
       "platform": "Platform",
       "practice": "Practices"
-    }
+    },
+    "drag": "Grab a sticker and throw it"
   },
   "writing": {
     "title": "Writing",
@@ -50,7 +120,13 @@
   },
   "contact": {
     "title": "Let's talk",
+    "big": [
+      "LET'S",
+      "TALK"
+    ],
     "intro": "A role, a project or an idea? Write to me and I'll get back to you.",
+    "elsewhere": "Elsewhere",
+    "direct": "Direct line",
     "name": "Name",
     "email": "Email",
     "message": "Message",
@@ -65,7 +141,14 @@
       "unexpected": "The message couldn't be sent. Try again in a moment."
     }
   },
-  "footer": { "built": "Built with Next.js and FastAPI.", "source": "Source" },
-  "notFound": { "title": "Page not found", "back": "Back home" },
+  "footer": {
+    "built": "Built with Next.js and FastAPI.",
+    "source": "Source",
+    "top": "Back to top"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "back": "Back home"
+  },
   "loading": "Loading…"
 }
