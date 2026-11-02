@@ -1,0 +1,55 @@
+# =============================================================================
+# Local development
+#
+# Dependencies only (API and web app run on the host):
+#   docker compose -f infra/docker-compose.yml up -d
+#
+# Full stack in containers:
+#   docker compose -f infra/docker-compose.yml --profile app up -d --build
+#
+# No .env needed: every value has a development default.
+# =============================================================================
+
+name: me-dev
+
+services:
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    profiles: ["app"]
+    build: ../backend
+    environment:
+      ENVIRONMENT: dev
+      MONGO_URI: mongodb://mongo:27017
+    ports:
+      - "8000:8000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    profiles: ["app"]
+    build: ../frontend
+    environment:
+      API_URL: http://api:8000
+      SITE_URL: http://localhost:3000
+      COOKIE_SECURE: "false"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  mongo_data:

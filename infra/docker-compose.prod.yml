@@ -1,0 +1,89 @@
+# =============================================================================
+# Production: brandonkamga.com
+#
+# Deployed by .github/workflows/deploy.yml into DEPLOY_PATH on the server, next to a .env
+# filled from infra/.env.example. By hand, from that directory:
+#
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Prerequisite on the server: Traefik on the external network "traefik-public", with the
+# "websecure" entrypoint and the "le" (Let's Encrypt) certificate resolver. Only the web app
+# joins that network. It talks to the API, and the API to MongoDB, on a private network that
+# has no route to the outside.
+# =============================================================================
+
+name: me
+
+services:
+  web:
+    image: ghcr.io/brandonkamga237/me-web:${IMAGE_TAG:?set IMAGE_TAG to a release, e.g. v0.1.0}
+    container_name: me-web
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8000
+      SITE_URL: https://${SITE_DOMAIN}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.me.rule=Host(`${SITE_DOMAIN}`) || Host(`www.${SITE_DOMAIN}`)"
+      - "traefik.http.routers.me.entrypoints=websecure"
+      - "traefik.http.routers.me.tls.certresolver=le"
+      - "traefik.http.routers.me.middlewares=me-www,me-headers,me-compress"
+      - "traefik.http.services.me.loadbalancer.server.port=3000"
+      # www redirects to the apex domain.
+      - "traefik.http.middlewares.me-www.redirectregex.regex=^https://www\\.(.+)"
+      - "traefik.http.middlewares.me-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.me-www.redirectregex.permanent=true"
+      - "traefik.http.middlewares.me-headers.headers.stsSeconds=63072000"
+      - "traefik.http.middlewares.me-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.me-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.me-compress.compress=true"
+    networks: [traefik-public, private]
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    image: ghcr.io/brandonkamga237/me-api:${IMAGE_TAG:?set IMAGE_TAG to a release, e.g. v0.1.0}
+    container_name: me-api
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: prod
+      MONGO_URI: mongodb://${MONGO_APP_USER}:${MONGO_APP_PASSWORD}@mongo:27017/${MONGO_DB}?authSource=${MONGO_DB}
+      MONGO_DB: ${MONGO_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+    networks: [private]
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:8.0
+    container_name: me-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_DB: ${MONGO_DB}
+      MONGO_APP_USER: ${MONGO_APP_USER}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+    networks: [private]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+networks:
+  traefik-public:
+    external: true
+  private:
+    internal: true
+
+volumes:
+  mongo_data:
