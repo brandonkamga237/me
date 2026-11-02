@@ -14,13 +14,11 @@ concurrency:
 
 jobs:
   backend:
-    # MongoDB 8.0 refuses to start on Linux 6.19+ (SERVER-121912), the kernel of the Ubuntu 26
-    # runners. 24.04 matches the VPS until a fixed MongoDB release ships.
-    runs-on: ubuntu-24.04
-    # The MongoDB adapters are tested against a real server too.
+    runs-on: ubuntu-latest
+    # The MongoDB adapters are tested against a real server too, of the version production runs.
     services:
       mongo:
-        image: mongo:8.0
+        image: mongo:7.0
         ports: ["27017:27017"]
         options: >-
           --health-cmd "mongosh --quiet --eval 'db.runCommand({ping: 1})'"
