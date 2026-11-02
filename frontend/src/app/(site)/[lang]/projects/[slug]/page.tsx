@@ -24,10 +24,15 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/projects/[
   const { lang, slug } = await params;
   const project = slug === PLACEHOLDER ? null : await getProject(slug);
   if (!project || !hasLocale(lang)) return {};
+  const title = `${project.title} · Brandon Kamga`;
+  const description = t(project.summary, lang);
+  const images = [{ url: `/og/brandon-kamga-${lang}.jpg`, width: 1200, height: 630, alt: title }];
   return {
     title: project.title,
-    description: t(project.summary, lang),
+    description,
     alternates: { canonical: `/${lang}/projects/${slug}`, languages: { en: `/en/projects/${slug}`, fr: `/fr/projects/${slug}` } },
+    openGraph: { type: "article", url: `/${lang}/projects/${slug}`, siteName: "Brandon Kamga", title, description, images },
+    twitter: { card: "summary_large_image", title, description, images },
   };
 }
 
